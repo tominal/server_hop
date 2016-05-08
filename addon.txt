@@ -1,0 +1,10 @@
+"AddonInfo"
+{
+        "name"              "Server Hopper"
+        "version"           "1.6"
+        "up_date"           "2016-05-08"
+        "author_name"       "GNoDe"
+        "author_email"      "gn0de@yahoo.com"
+        "info"              "simple garry's mod server hopper"
+        "override"          "0"
+}
