@@ -1,69 +1,73 @@
 function server_hop()
+
+	local blur = Material("pp/blurscreen")
+	local function DrawBlur(panel, amount)
+		local x, y = panel:LocalToScreen(0, 0)
+		local scrW, scrH = ScrW(), ScrH()
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(blur)
+			for i = 1, 3 do
+				blur:SetFloat("$blur", (i / 3) * (amount or 6))
+				blur:Recompute()
+				render.UpdateScreenEffectTexture()
+				surface.DrawTexturedRect(x * -1, y * -1, scrW, scrH)
+			end
+	end
+
 	local server_hop = vgui.Create("DFrame", server_hop)
-	server_hop:SetSize(500, 678)
-	server_hop:SetTitle(GetHostName())
+	server_hop:SetSize(320, 200)
+	server_hop:SetTitle('Other Dallas servers')
 	server_hop:SetVisible(true)
-	server_hop:SetDraggable(true)
-	server_hop:ShowCloseButton(true)
+	server_hop:SetDraggable(false)
+	server_hop:ShowCloseButton(false)
 	server_hop:Center()
 	server_hop:MakePopup()
-	server_hop.Paint = function()
-		draw.RoundedBox(8, 0, 0, server_hop:GetWide(), server_hop:GetTall(), Color(61, 52, 52, 255))
+	server_hop.Paint = function(self, w, h)
+		DrawBlur(self, 3)
+		draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 150 ) )
+		surface.SetDrawColor( Color( 0, 0, 0, 100 ) )
+		surface.DrawOutlinedRect( 0, 0, w, h )
 	end
 
 	local host_number_one = vgui.Create("DButton", server_hop)
-	host_number_one:SetSize(350, 100)
-	host_number_one:SetPos(50, 40)
-	host_number_one:SetText("Server One")
+	host_number_one:SetSize(150, 100)
+	host_number_one:SetPos(8, 40)
+	host_number_one:DockMargin( 0,0,0,0 )
+	host_number_one:SetText( "Dallas TX - Any" )
+	host_number_one:SetFont( "Default" )
+
 	host_number_one.DoClick = function()
-		LocalPlayer():ConCommand("connect ip")
+		LocalPlayer():ConCommand("connect 144.202.67.250:27015")
 	end
+
 	host_number_one.Paint = function()
-		draw.RoundedBox(8, 0, 0, host_number_one:GetWide(), host_number_one:GetTall(), Color(0, 0, 0, 150))
+		surface.SetDrawColor(255, 255, 255, 150)
+		surface.DrawRect(0, 0, server_hop:GetWide(), server_hop:GetTall())
+		--draw.DrawRect(0, 0, host_number_one:GetWide(), host_number_one:GetTall(), Color(0, 0, 0, 150))
 	end
-	
-	local host_number_two = vgui.Create("DButton", server_hop)
-	host_number_two:SetSize(350, 100)
-	host_number_two:SetPos(50, 145)
-	host_number_two:SetText("Server Two")
-	host_number_two.DoClick = function()
-		LocalPlayer():ConCommand("connect ip")
+
+	local closeButton = vgui.Create("DButton", server_hop)
+	closeButton:SetSize( 80, 30 )
+	closeButton:SetPos( server_hop:GetWide() - 80, server_hop:GetTall() - 30 )
+	closeButton:DockMargin( 0,0,0,0 )
+	closeButton:SetText( "Close" )
+	closeButton:SetFont( "Default" )
+
+	closeButton.DoClick = function(self)
+		server_hop:Close()
 	end
-	host_number_two.Paint = function()
-		draw.RoundedBox(8, 0, 0, host_number_two:GetWide(), host_number_two:GetTall(), Color(0, 0, 0, 150))
+
+	local color = Color(200, 200, 200)
+	closeButton.OnCursorEntered = function()
+		color = Color(150, 150, 150)
 	end
-	
-	local host_number_three = vgui.Create("DButton", server_hop)
-	host_number_three:SetSize(350, 100)
-	host_number_three:SetPos(50, 250)
-	host_number_three:SetText("Server Three")
-	host_number_three.DoClick = function()
-		LocalPlayer():ConCommand("connect ip")
+	closeButton.OnCursorExited = function()
+		color = Color(200, 200, 200)
 	end
-	host_number_three.Paint = function()
-		draw.RoundedBox(8, 0, 0, host_number_three:GetWide(), host_number_three:GetTall(), Color(0, 0, 0, 150))
-	end
-	
-	local host_number_four = vgui.Create("DButton", server_hop)
-	host_number_four:SetSize(350, 100)
-	host_number_four:SetPos(50, 355)
-	host_number_four:SetText("Server Four")
-	host_number_four.DoClick = function()
-		LocalPlayer():ConCommand("connect ip")
-	end
-	host_number_four.Paint = function()
-		draw.RoundedBox(8, 0, 0, host_number_four:GetWide(), host_number_four:GetTall(), Color(0, 0, 0, 150))
-	end
-	
-	local host_number_five = vgui.Create("DButton", server_hop)
-	host_number_five:SetSize(350, 100)
-	host_number_five:SetPos(50, 460)
-	host_number_five:SetText("Server Five")
-	host_number_five.DoClick = function()
-		LocalPlayer():ConCommand("connect ip")
-	end
-	host_number_five.Paint = function()
-		draw.RoundedBox(8, 0, 0, host_number_five:GetWide(), host_number_five:GetTall(), Color(0, 0, 0, 150))
+
+	closeButton.Paint = function()
+		surface.SetDrawColor( 255, 255, 255, 100 )
+    surface.DrawRect( 0, 0, server_hop:GetWide(), server_hop:GetTall() )
 	end
 end
 concommand.Add("server_hop", server_hop)
